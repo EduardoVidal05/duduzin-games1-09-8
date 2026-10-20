@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlatformController : MonoBehaviour
@@ -24,6 +26,8 @@ public class PlatformController : MonoBehaviour
     private int coinCounter = 0;
      [SerializeField] private TextMeshProUGUI coinText;
 
+    [Header("Animation Settings")]
+    [SerializeField] private Animator anim;
 
 
 
@@ -45,7 +49,8 @@ public class PlatformController : MonoBehaviour
         
         // Initialize input actions using YOUR PlayerActionMap asset
         inputActions = new PlayerActionMap();
-        
+        anim = GetComponent <Animator>();
+
         moveAction = inputActions.Player.Move;
         jumpAction = inputActions.Player.Jump;
     }
@@ -114,7 +119,7 @@ public class PlatformController : MonoBehaviour
             isGrounded = hit.collider != null;
         }
     }
-    
+
     private void MovePlayer()
     {
         // Apply horizontal movement
@@ -122,8 +127,17 @@ public class PlatformController : MonoBehaviour
             moveInput.x * moveSpeed,
             rb.linearVelocity.y
         );
+        anim.SetBool("isMooving", rb.linearVelocity.magnitude > 0.1f);
+
+
+        if(rb.linearVelocity.x > 0.1f)
+    {
+            this.GetComponent<SpriteRenderer>().flipX = false;
     }
-    
+    else if (rb.linearVelocity.x < -0.1f) {
+            this.GetComponent<SpriteRenderer>().flipX = true;
+        }
+    }
     private void ApplyJumpPhysics()
     {
         // Better jump physics (variable jump height)
