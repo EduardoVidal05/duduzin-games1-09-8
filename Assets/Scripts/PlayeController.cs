@@ -118,6 +118,7 @@ public class PlatformController : MonoBehaviour
             );
             isGrounded = hit.collider != null;
         }
+        anim.SetBool("onGound", isGrounded);
     }
 
     private void MovePlayer()
